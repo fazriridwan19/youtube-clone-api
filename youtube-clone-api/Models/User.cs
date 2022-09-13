@@ -8,9 +8,5 @@
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
 
-        public static implicit operator User(List<User> v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
