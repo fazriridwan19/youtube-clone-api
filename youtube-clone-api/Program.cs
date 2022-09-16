@@ -1,11 +1,14 @@
 global using Microsoft.EntityFrameworkCore;
 global using youtube_clone_api.Data;
-using youtube_clone_api.Services;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using youtube_clone_api.Services.UserService;
+using youtube_clone_api.Services.AuthService;
+using youtube_clone_api.Services.VideoService;
+using youtube_clone_api.Services.CommentService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +24,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IChannelService, ChannelService>();
+builder.Services.AddScoped<IVideoService, VideoService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(options =>
 {

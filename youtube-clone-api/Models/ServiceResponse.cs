@@ -4,6 +4,7 @@
     {
         public T? Data { get; set; }
         public bool Success { get; set; } = true;
+        public int Status { get; set; } = 200;
         public string Message { get; set; } = string.Empty;
     }
 }

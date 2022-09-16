@@ -1,7 +1,7 @@
 ﻿using youtube_clone_api.Dto;
 using youtube_clone_api.Models;
 
-namespace youtube_clone_api.Services
+namespace youtube_clone_api.Services.AuthService
 {
     public interface IAuthService
     {

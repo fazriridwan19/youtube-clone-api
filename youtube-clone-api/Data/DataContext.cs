@@ -6,6 +6,8 @@ namespace youtube_clone_api.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<User> Users{ get; set; }
-        public DbSet<Channel> Channels { get; set; }
+        public DbSet<Subscriber> Subscribers{ get; set; }
+        public DbSet<Video> Videos{ get; set; }
+        public DbSet<Comment> Comments{ get; set; }
     }
 }

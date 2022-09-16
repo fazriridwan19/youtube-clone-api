@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using youtube_clone_api.Dto;
 using youtube_clone_api.Models;
-using youtube_clone_api.Services;
+using youtube_clone_api.Services.AuthService;
 
 namespace youtube_clone_api.Controllers
 {
