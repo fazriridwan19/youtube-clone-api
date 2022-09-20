@@ -57,7 +57,8 @@ namespace youtube_clone_api.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Views = table.Column<int>(type: "int", nullable: false),
                     UrlVideo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UrlThumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UrlThumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

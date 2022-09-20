@@ -19,12 +19,12 @@ namespace youtube_clone_api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<ServiceResponse<string>>> Login([FromBody] LoginRequestDto request)
+        public async Task<ActionResult<ServiceResponse<LoginResponseDto>>> Login([FromBody] LoginRequestDto request)
         {
             var response = await _authService.Login(request);
-            if (response.Message == "User Not Found") return NotFound(response);
-            if (response.Message == "Email or Password Invalid") return BadRequest(response);
-            return Ok(response.Data);
+            if (response.Status == 404) return NotFound(response);
+            if (response.Status == 400) return BadRequest(response);
+            return Ok(response);
         }
 
         [HttpPost("register")]

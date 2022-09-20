@@ -150,15 +150,18 @@ namespace youtube_clone_api.Services.UserService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<Subscriber>> UnsubscribeUserById(int userId)
+        public async Task<ServiceResponse<Subscriber>> UnsubscribeUserById(int userId, CancellationToken cancellationToken)
         {
             var serviceResponse = new ServiceResponse<Subscriber>();
             var subsciberEmail = _httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
             var subscriberDb = await _context.Subscribers
                 .SingleOrDefaultAsync(subscriber => subscriber.SubscriberEmail == subsciberEmail && subscriber.SubscribedUserId == userId);
-            //var subscriberDb = (from subscriber in await _context.Subscribers.ToListAsync()
-            //                   where subscriber.Email == loggedInUser?.Email && subscriber.SubscribedUserId == userId
-            //                   select subscriber).First();
+            //var subscriberDb = await (from subscriber in _context.Subscribers
+            //                          where subscriber.Email == loggedInUser?.Email
+            //                          && subscriber.SubscribedUserId == userId
+            //                          select subscriber)
+            //                          .AsQueryable()
+            //                          .ToListAsync(cancellationToken);
             if (subscriberDb == null)
             {
                 serviceResponse.Success = false;

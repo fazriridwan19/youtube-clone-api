@@ -35,6 +35,7 @@ namespace youtube_clone_api.Services.VideoService
                 Description = request.Description,
                 UrlVideo = request.UrlVideo,
                 UrlThumbnail = request.UrlThumbnail,
+                CreatedAt = DateTime.Now
             };
             _context.Videos.Add(video);
             await _context.SaveChangesAsync();
@@ -50,6 +51,7 @@ namespace youtube_clone_api.Services.VideoService
             var serviceResponse = new ServiceResponse<Video>();
             var video = await _context.Videos
                 .Include(video => video.Comments)
+                .Include(video => video.Likes)
                 .SingleOrDefaultAsync(user => user.Id == id);
             if (video == null)
             {
@@ -69,6 +71,7 @@ namespace youtube_clone_api.Services.VideoService
             var serviceResponse = new ServiceResponse<List<Video>>();
             List<Video> videos = await _context.Videos
                 .Include(video => video.Comments)
+                .Include(video => video.Likes)
                 .ToListAsync();
             serviceResponse.Data = videos;
             serviceResponse.Message = "Fetch Successfully";

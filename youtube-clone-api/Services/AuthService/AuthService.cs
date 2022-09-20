@@ -18,13 +18,14 @@ namespace youtube_clone_api.Services.AuthService
             _configuration = configuration;
         }
 
-        public async Task<ServiceResponse<string>> Login(LoginRequestDto request)
+        public async Task<ServiceResponse<LoginResponseDto>> Login(LoginRequestDto request)
         {
             var user = await _context.Users.SingleOrDefaultAsync(user => user.Email == request.Email);
-            var serviceResonse = new ServiceResponse<string>();
+            var serviceResonse = new ServiceResponse<LoginResponseDto>();
             if (user == null)
             {
                 serviceResonse.Success = false;
+                serviceResonse.Status = 404;
                 serviceResonse.Message = "User Not Found";
                 return serviceResonse;
             }
@@ -32,11 +33,20 @@ namespace youtube_clone_api.Services.AuthService
             if (user.Email != request.Email || !hashGenerator.VerifyPasswordHash(user.PasswordHash, user.PasswordSalt))
             {
                 serviceResonse.Success = false;
+                serviceResonse.Status = 400;
                 serviceResonse.Message = "Email or Password Invalid";
                 return serviceResonse;
             }
             JwtTokenGenerator generator = new JwtTokenGenerator(_configuration);
-            serviceResonse.Data = generator.GenerateToken(user);
+            string token = generator.GenerateToken(user);
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<User, UserResponseDto>());
+            var mapper = new Mapper(config);
+            var loginResponse = new LoginResponseDto
+            {
+                Token = token,
+                User = mapper.Map<UserResponseDto>(user)
+            };
+            serviceResonse.Data = loginResponse;
             serviceResonse.Success = true;
             serviceResonse.Message = "Login successfully";
             return serviceResonse;
@@ -46,6 +56,8 @@ namespace youtube_clone_api.Services.AuthService
         {
             try
             {
+                //TODO valdiation email
+
                 PasswordHashGenerator generator = new PasswordHashGenerator(request.Password);
                 generator.CreatePasswordHash(out byte[] passwordHash, out byte[] passwordSalt);
                 var user = new User

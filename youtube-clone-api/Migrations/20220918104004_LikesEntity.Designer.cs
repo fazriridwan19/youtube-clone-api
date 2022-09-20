@@ -12,8 +12,8 @@ using youtube_clone_api.Data;
 namespace youtube_clone_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220916035929_DbEntity")]
-    partial class DbEntity
+    [Migration("20220918104004_LikesEntity")]
+    partial class LikesEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,6 +54,31 @@ namespace youtube_clone_api.Migrations
                     b.HasIndex("CommentedVideoId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("youtube_clone_api.Models.Like", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LikedVideoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LikerEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LikedVideoId");
+
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("youtube_clone_api.Models.Subscriber", b =>
@@ -118,6 +143,9 @@ namespace youtube_clone_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -158,6 +186,17 @@ namespace youtube_clone_api.Migrations
                     b.Navigation("CommentedVideo");
                 });
 
+            modelBuilder.Entity("youtube_clone_api.Models.Like", b =>
+                {
+                    b.HasOne("youtube_clone_api.Models.Video", "LikedVideo")
+                        .WithMany("Likes")
+                        .HasForeignKey("LikedVideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LikedVideo");
+                });
+
             modelBuilder.Entity("youtube_clone_api.Models.Subscriber", b =>
                 {
                     b.HasOne("youtube_clone_api.Models.User", "SubscribedUser")
@@ -190,6 +229,8 @@ namespace youtube_clone_api.Migrations
             modelBuilder.Entity("youtube_clone_api.Models.Video", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
         }
