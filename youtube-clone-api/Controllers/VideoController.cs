@@ -47,9 +47,14 @@ namespace youtube_clone_api.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<Video>>> GetVideos()
+        public async Task<ActionResult<ServiceResponse<List<Video>>>> GetVideos()
         {
-            return Ok(await _videoService.GetVideos());
+            var response = await _videoService.GetVideos();
+            if (response.Status == 204)
+            {
+                NoContent();
+            }
+            return Ok(response);
         }
 
         [HttpPut("{id}")]

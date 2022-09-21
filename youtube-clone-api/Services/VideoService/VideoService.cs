@@ -73,6 +73,13 @@ namespace youtube_clone_api.Services.VideoService
                 .Include(video => video.Comments)
                 .Include(video => video.Likes)
                 .ToListAsync();
+            if (videos.Count == 0)
+            {
+                serviceResponse.Data = new List<Video>();
+                serviceResponse.Status = 204;
+                serviceResponse.Message = "Data is Empty";
+                return serviceResponse;
+            }
             serviceResponse.Data = videos;
             serviceResponse.Message = "Fetch Successfully";
             return serviceResponse;

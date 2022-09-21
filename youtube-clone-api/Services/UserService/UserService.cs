@@ -150,7 +150,7 @@ namespace youtube_clone_api.Services.UserService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<Subscriber>> UnsubscribeUserById(int userId, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<Subscriber>> UnsubscribeUserById(int userId)
         {
             var serviceResponse = new ServiceResponse<Subscriber>();
             var subsciberEmail = _httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
