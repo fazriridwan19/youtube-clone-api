@@ -52,6 +52,7 @@ namespace youtube_clone_api.Services.VideoService
             var video = await _context.Videos
                 .Include(video => video.Comments)
                 .Include(video => video.Likes)
+                .Include(video => video.Dislikes)
                 .SingleOrDefaultAsync(user => user.Id == id);
             if (video == null)
             {
@@ -72,6 +73,7 @@ namespace youtube_clone_api.Services.VideoService
             List<Video> videos = await _context.Videos
                 .Include(video => video.Comments)
                 .Include(video => video.Likes)
+                .Include(video => video.Dislikes)
                 .ToListAsync();
             if (videos.Count == 0)
             {

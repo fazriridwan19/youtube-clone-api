@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using youtube_clone_api.Dto;
 using youtube_clone_api.Models;
+using youtube_clone_api.Services.DislikeService;
 using youtube_clone_api.Services.LikeService;
 using youtube_clone_api.Services.VideoService;
 
@@ -16,11 +17,13 @@ namespace youtube_clone_api.Controllers
     {
         private readonly IVideoService _videoService;
         private readonly ILikeService _likeService;
+        private readonly IDislikeService _dislikeService;
 
-        public VideoController(IVideoService videoService, ILikeService likeService)
+        public VideoController(IVideoService videoService, ILikeService likeService, IDislikeService dislikeService)
         {
             _videoService = videoService;
             _likeService = likeService;
+            _dislikeService = dislikeService;
         }
 
         [HttpPost]
@@ -113,6 +116,22 @@ namespace youtube_clone_api.Controllers
             if (response.Status == 404)
             {
                 return NotFound(response);
+            }
+            return Ok(response);
+        }
+
+        [HttpPost("/dislike/{videoId}")]
+        [Authorize]
+        public async Task<ActionResult<ServiceResponse<Dislike>>> DislikeVideo(int videoId)
+        {
+            var response = await _dislikeService.DislikeVideoById(videoId);
+            if (response.Status == 404)
+            {
+                return NotFound(response);
+            }
+            if (response.Status == 400)
+            {
+                return BadRequest(response);
             }
             return Ok(response);
         }

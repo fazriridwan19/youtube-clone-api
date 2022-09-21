@@ -31,7 +31,7 @@ namespace youtube_clone_api.Services.LikeService
             var loggedInEmailUser = _httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
             var forbiddenLiker = await _context.Likes
                 .SingleOrDefaultAsync(like => like.LikerEmail == loggedInEmailUser && like.LikedVideo.Equals(video));
-            if (video.Likes != null && forbiddenLiker != null) 
+            if (forbiddenLiker != null) 
             {
                 if (video.Likes.Contains(forbiddenLiker))
                 {
@@ -48,6 +48,16 @@ namespace youtube_clone_api.Services.LikeService
                 LikerEmail = loggedInEmailUser,
                 CreatedAt = DateTime.Now,
             };
+            var exDisliker = await (from disliker in _context.Dislikes
+                                 where disliker.DislikerEmail.Equals(loggedInEmailUser)
+                                 && disliker.DislikedVideo.Equals(video)
+                                 select disliker)
+                            .AsQueryable()
+                            .SingleOrDefaultAsync();
+            if (exDisliker != null)
+            {
+                _context.Dislikes.Remove(exDisliker);
+            }
             _context.Likes.Add(currentLiker);
             await _context.SaveChangesAsync();
 

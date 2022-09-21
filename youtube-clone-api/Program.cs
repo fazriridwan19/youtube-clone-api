@@ -10,6 +10,7 @@ using youtube_clone_api.Services.AuthService;
 using youtube_clone_api.Services.VideoService;
 using youtube_clone_api.Services.CommentService;
 using youtube_clone_api.Services.LikeService;
+using youtube_clone_api.Services.DislikeService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVideoService, VideoService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ILikeService, LikeService>();
+builder.Services.AddScoped<IDislikeService, DislikeService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(options =>
 {

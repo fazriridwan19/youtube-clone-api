@@ -10,5 +10,6 @@ namespace youtube_clone_api.Data
         public DbSet<Video> Videos{ get; set; }
         public DbSet<Comment> Comments{ get; set; }
         public DbSet<Like> Likes{ get; set; }
+        public DbSet<Dislike> Dislikes{ get; set; }
     }
 }

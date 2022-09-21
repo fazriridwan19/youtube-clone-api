@@ -25,6 +25,7 @@ namespace youtube_clone_api.Services.UserService
                 .Include(user => user.Subscribers)
                 .Include(user => user.Videos)
                 .ToListAsync();
+
             var serviceResponse = new ServiceResponse<List<UserResponseDto>>();
             var config = new MapperConfiguration(cfg => cfg.CreateMap<User, UserResponseDto>());
             var mapper = new Mapper(config);

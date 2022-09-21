@@ -14,6 +14,7 @@ namespace youtube_clone_api.Models
         public string UrlVideo { get; set; } = string.Empty;
         public string UrlThumbnail { get; set; } = string.Empty;
         public List<Like> Likes { get; set; }
+        public List<Dislike> Dislikes { get; set; }
         public List<Comment> Comments { get; set; }
         public DateTime CreatedAt { get; set; }
     }
