@@ -21,11 +21,29 @@ namespace youtube_clone_api.Services.UserService
 
         public async Task<ServiceResponse<List<UserResponseDto>>> GetUsers()
         {
-            List<User> users = await _context.Users
-                .Include(user => user.Subscribers)
-                .Include(user => user.Videos)
-                .ToListAsync();
-
+            //List<User> users = await _context.Users
+            //    .Include(user => user.Subscribers)
+            //    .Include(user => user.Videos)
+            //    .ToListAsync();
+            List<User> users = await (from user in _context.Users
+                                      .Include(user => user.Videos)
+                                      .Include(user => user.Subscribers)
+                                      select new User
+                                      {
+                                          Id = user.Id,
+                                          Name = user.Name,
+                                          Email = user.Email,
+                                          SubscribersCount = user.SubscribersCount,
+                                          Subscribers = user.Subscribers,
+                                          Videos = (from video in _context.Videos
+                                                    .Include(video => video.Comments)
+                                                    .Include(video => video.Likes)
+                                                    .Include(video => video.Dislikes)
+                                                    where video.VideoOwnerId.Equals(user.Id)
+                                                    select video).AsQueryable().ToList()
+                                      })
+                                      .AsQueryable()
+                                      .ToListAsync();
             var serviceResponse = new ServiceResponse<List<UserResponseDto>>();
             var config = new MapperConfiguration(cfg => cfg.CreateMap<User, UserResponseDto>());
             var mapper = new Mapper(config);
@@ -41,12 +59,27 @@ namespace youtube_clone_api.Services.UserService
 
         public async Task<ServiceResponse<UserResponseDto>?> GetUser(int id)
         {
-            var user = await _context.Users
-                .Include(user => user.Subscribers)
-                .Include(user => user.Videos)
-                .SingleOrDefaultAsync(user => user.Id == id);
+            var userDb = await (from user in _context.Users
+                              .Include(user => user.Videos)
+                              .Include(user => user.Subscribers)
+                              where user.Id.Equals(id)
+                              select new User
+                              {
+                                  Id = user.Id,
+                                  Name = user.Name,
+                                  Email = user.Email,
+                                  SubscribersCount = user.SubscribersCount,
+                                  Subscribers = user.Subscribers,
+                                  Videos = (from video in _context.Videos
+                                            .Include(video => video.Comments)
+                                            .Include(video => video.Likes)
+                                            .Include(video => video.Dislikes)
+                                            select video).AsQueryable().ToList()
+                              })
+                              .AsQueryable()
+                              .SingleOrDefaultAsync();
             var serviceResponse = new ServiceResponse<UserResponseDto>();
-            if (user == null)
+            if (userDb == null)
             {
                 serviceResponse.Data = null;
                 serviceResponse.Success = false;
@@ -56,7 +89,7 @@ namespace youtube_clone_api.Services.UserService
 
             var config = new MapperConfiguration(cfg => cfg.CreateMap<User, UserResponseDto>());
             var mapper = new Mapper(config);
-            serviceResponse.Data = mapper.Map<UserResponseDto>(user);
+            serviceResponse.Data = mapper.Map<UserResponseDto>(userDb);
             serviceResponse.Message = "Fetching successfully";
             return serviceResponse;
         }
